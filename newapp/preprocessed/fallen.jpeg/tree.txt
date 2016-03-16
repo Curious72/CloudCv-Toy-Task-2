@@ -1,0 +1,1 @@
+{"ConvolutionalFiltering": [{"Grayscale": [{"Resize": [{"ConvolutionalFiltering": [{"GaussianBlur": [{"ConvolutionalFiltering": [{}, "201232"]}, "20123"]}, "2012"]}, "201"]}, "20"]}, "2"], "Grayscale": [{"Resize": [{"ConvolutionalFiltering": [{"ConvolutionalFiltering": [{}, "012"], "Grayscale": [{}, "0120"]}, "012"]}, "01"]}, "0"]}
