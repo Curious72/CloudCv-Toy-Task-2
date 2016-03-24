@@ -1,1 +1,1 @@
-["Grayscale","Resize","ConvolutionalFiltering"]
+["Grayscale","CannyEdge","ConvolutionalFiltering"]

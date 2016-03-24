@@ -1,1 +1,0 @@
-["Resize","Grayscale","ConvolutionalFiltering","Resize","Grayscale","GaussianBlur"]

@@ -1,1 +1,0 @@
-{"Grayscale": [{"Resize": [{"ConvolutionalFiltering": [{}, "012"]}, "01"]}, "0"]}

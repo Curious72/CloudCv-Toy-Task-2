@@ -14,61 +14,83 @@
 
         
         <script>
-            pipeline=[];
-            pipeloaded=[];
-               t=1;
-        var doit=function(name){
-            
-        pipeline.push(name);
-            
+            current_pipeline=[];
+            loaded_pipeline=[];
+              var ptr=1;
+             var count=1;
+        var create_pipeline=function(name){
+        current_pipeline.push(name);
+        div=document.getElementById("pipeline");
+        dragg=document.createElement("div");
+        dragg.style="float:left;width:auto;height:30px";
+        span=document.createElement("span");
+        span.className="label label-default";
+        text=document.createTextNode(name);
+        div.appendChild(dragg);
+        dragg.appendChild(span);
+        span.appendChild(text);
           };
-        var dothat = function(){
-          pipeline=[];  };
+        var delete_pipeline = function(){
+          current_pipeline=[];
+         var myNode= document.getElementById("pipeline");
+         
+while (myNode.firstChild) {
+    myNode.removeChild(myNode.firstChild);
+}
+          
+          };
         
         var undo = function() {        
-            pipeline.pop();
+            current_pipeline.pop();
         
         };
-        var fd= function(id){
+        var concatenate_pipeline= function(id){
         
             $('#'+id).click(function(){
-               pipeline=pipeline.concat(pipeloaded);
-        
+               current_pipeline=current_pipeline.concat(loaded_pipeline);
+               var t=0;
+               var l =loaded_pipeline.length;
+               for(t=0;t<l;t++){
+                 div=document.getElementById("pipeline");
+        dragg=document.createElement("div");
+        dragg.style="float:left;width:auto;height:30px";
+        span=document.createElement("span");
+        span.className="label label-default";
+        text=document.createTextNode(loaded_pipeline[t]);
+        div.appendChild(dragg);
+        dragg.appendChild(span);
+        span.appendChild(text);
+               }
+
                 });
             
         };
      
-        var po = function(event){
+        var upload_pipeline = function(event){
             input=event.target;
             var reader = new FileReader();
             reader.onload=function(){
             var text=reader.result;
-            pipeloaded=JSON.parse(text);
-            if (t==1) {
+            loaded_pipeline=JSON.parse(text);
+            if (ptr==1) {
             go=document.createElement("input");
             go.type="button";
             go.id="conc"
+            go.className="btn btn-primary"
             go.value="Concatenate Pipelines"
-            document.getElementById("checker").appendChild(go);
-            t=0;
-            fd(go.id);
+            document.getElementById("pipe").appendChild(go);
+            ptr=0;
+            concatenate_pipeline(go.id);
             }
             }
             reader.readAsText(input.files[0]);
             };
-        
-        
-        
-        
+            
         var save= function(){
     $.ajax({
         url:"savej/",
         type:"POST",
-        data:{'mod':JSON.stringify(pipeline)},
-        success: function(json){
-         alert(json);   
-        }
-          
+        data:{'pipeline':JSON.stringify(current_pipeline)}
         });
         };
 
@@ -83,13 +105,13 @@
       output.src = dataURL;
     };
     reader.readAsDataURL(input.files[0]);
-     op= input.files[0].name;
+     filename= input.files[0].name;
      
   };
 
 
 
-var newfn= function(id,id1,id2)
+var rm_image= function(id,id1,id2)
 {
     
   $('#'+id).click(function(){
@@ -106,26 +128,39 @@ var newfn= function(id,id1,id2)
 };
 
 
-  count=1;
-  var aja = function(event){
+  
+  var run_pipeline = function(event){
     event.preventDefault();
     $.ajax({
         url:"opencv/",
         type:"POST",
-        data:{'mod':JSON.stringify(pipeline),'datas':op},
+        data:{'pipeline':JSON.stringify(current_pipeline),'filename':filename},
         success:function(json)
         {
-            $.each(json.url,function(){
-                
+            var iter=0;
+            var len=json.url.length;
+            for(iter=len-1;iter>=0;iter--)
+            {
+            
                   y=document.createElement("div");
-          label=document.createElement
+                  y.style="width:auto;height:auto";
+                  thumb=document.createElement("div");
+                  thumb.style="width:auto;height:auto";
+                  thumb.className="thumbnail"
+                
           s=count.toString();
           y.setAttribute("id",s);
           ar=document.createElement("a");
           z=document.createElement("img");
-          z.setAttribute("src",'static/images/'+'folder_'+op+'/'+this+'.png');
+          z.setAttribute("src",'static/images/'+'folder_'+filename+'/'+json.url[iter]+'.png');
           z.className="img-responsive";
-          ar.className="thumbnail";
+          ar.className="img-thumbnail";
+          lab=document.createElement("div");
+          lab.className="caption"
+          head=document.createElement("h5");
+          trext=document.createTextNode((iter+1)+" . "+json.array[iter]);
+          head.appendChild(trext);
+          lab.appendChild(head);
           z.id="c"+s;
           rt=document.createElement("div");
           po=document.createElement("a");
@@ -133,26 +168,23 @@ var newfn= function(id,id1,id2)
           rt.id="a"+s;
           po.id="b"+s;
           po.setAttribute("class","close");
-          y.className="col-xs-3";
-          document.getElementById("grid").appendChild(y);
+          y.className="col-sm-6 col-md-4";
+          grid=document.getElementById("grid");
+          grid.insertBefore(y,grid.firstChild);
           y.appendChild(rt);
-          rt.appendChild(po);
-          rt.appendChild(ar);
+          rt.appendChild(thumb);
+         thumb.appendChild(po);
+          thumb.appendChild(ar);
+          thumb.appendChild(lab);
           ar.appendChild(z);
-          ;
+          
         count=count+1;
-        newfn(po.id,y.id,z.id);
-                
-                
-                
-                });
-        
-        },
-        error:function(exception){
-          alert("happy");
+        rm_image(po.id,y.id,z.id);       
+                }
         }
         });
   };
+  
   
         </script>
     </head>
@@ -166,34 +198,54 @@ var newfn= function(id,id1,id2)
         </div>
         <form action="" method="POST" enctype="multipart/form-data" class="form-group">
             
-            <div style="text-align:center;" id="im">
+            <div id="im">
         
-     <div class="container">
-        <div class="jumbotron">
+        <div class="jumbotron" style="height:350px">
             <div class="row"><div class="col-xs-12">
-            <input class="btn btn-primary btn-lg filestyle" data-input="false" type='file' data-Buttontext="Upload Image"  name="img" id="inp" accept='image/*'  onchange='openFile(event)'>
-<img id='output' alt="Upload your image here" src="" />
-      </div>
-            </div></div></div>
-<div id="checker" style="text-align: center">
-                <input type="button" value ="Grayscale" onclick="doit('Grayscale');">
-                <input type="button" value="Resize" onclick="doit('Resize')">
-                <input type="button" value="ConvolutionalFiltering" onclick="doit('ConvolutionalFiltering');">
-                <input type="button" value="GaussianBlur" onClick="doit('GaussianBlur');">
-                <br>
-                <input type="button" value="Clear Pipeline" onclick="dothat()">
-            <!--    <input type="button" value="Undo" onclick="undo()">!-->
-                <input type="button" value="Save Pipeline" onclick="save()">
-                <input  type='file' accept='txt' class="filestyle" data-input="false" data-Buttontext="Upload Pipelines" onchange='po(event)'>
-                <br>
-                <input type="submit" value="Run Pipeline" onclick='aja(event)'>
-                <input type="button" value="Show pipeline" onclick='alert(pipeline);'>
-                </div>
-<br><br><br>
+           
+           <div style="position: relative;left:10px;float: left" id="pipe">
+                            <input  type='file' accept='.txt' class="filestyle" data-input="false" data-Buttontext="Upload Pipelines" onchange='upload_pipeline(event)'>
+<br>
+            <input type="button" class="btn btn-primary " value="Clear Pipeline" onclick="delete_pipeline()">
+            <!--    <input type="button" value="Undo" onclick="undo()">!--><br><br>
+                <input type="button" class="btn btn-primary " value="Save Pipeline" onclick="save()"><br><br>
+                
+                <input type="submit" class="btn btn-primary " value="Run Pipeline" onclick='run_pipeline(event)'><br><br>
+                <!--<input type="button" class="btn btn-primary " value="Show pipeline" onclick='alert(pipeline);'><br><br>!-->
+           </div>
+           
+             <div style="position:absolute;left:200px;float:left;">
+            <input class=" filestyle " data-input="false" type='file' data-Buttontext="Upload Image"  name="img" id="inp" accept='image/*'  onchange='openFile(event)'>
+            <br><br>
+<img id='output'   alt="Upload your image here" src="" />
             </div>
-            <div class="container" >
-           <div class="row" id="grid">
+           
+            <div style="position:absolute;left:420px" >
+
+            <input type="button" class="btn btn-primary " value ="Grayscale"  onclick="create_pipeline('Grayscale');">
+                <input type="button" class="btn btn-primary " value="CannyEdge" onclick="create_pipeline('CannyEdge')">
+                <input type="button"class="btn btn-primary " value="ConvolutionalFiltering" onclick="create_pipeline('ConvolutionalFiltering');">
+                <input type="button" class="btn btn-primary " value="GaussianBlur" onClick="create_pipeline('GaussianBlur');">
+            <br><br><br>
+           
+           <div style="position: relative;left: 140px">
+            <h4 >Pipeline</h4>
+           </div>     
+        <div id="pipeline" style="position: relative;left: 140px" >
             
+        </div>
+            </div>
+          
+              
+            </div></div></div>
+        <br><br>
+<div id="checker" style="text-align: center">
+        
+            
+                </div>
+            </div>
+            <div class="container" style="">
+           <div class="row" id="grid" style="position: absolute;left:120px;">
            </div>
             </div>
         </form>
