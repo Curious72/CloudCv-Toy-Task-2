@@ -11,186 +11,13 @@
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
          <script src="/static/bootstrap-filestyle-1.2.1/src/bootstrap-filestyle.min.js"></script>
 
-
+<script src="/static/js/index.js"></script>
         
-        <script>
-            current_pipeline=[];
-            loaded_pipeline=[];
-              var ptr=1;
-             var count=1;
-        var create_pipeline=function(name){
-        current_pipeline.push(name);
-        div=document.getElementById("pipeline");
-        dragg=document.createElement("div");
-        dragg.style="float:left;width:auto;height:30px";
-        span=document.createElement("span");
-        span.className="label label-default";
-        text=document.createTextNode(name);
-        div.appendChild(dragg);
-        dragg.appendChild(span);
-        span.appendChild(text);
-          };
-        var delete_pipeline = function(){
-          current_pipeline=[];
-         var myNode= document.getElementById("pipeline");
-         
-while (myNode.firstChild) {
-    myNode.removeChild(myNode.firstChild);
-}
-          
-          };
-        
-        var undo = function() {        
-            current_pipeline.pop();
-        
-        };
-        var concatenate_pipeline= function(id){
-        
-            $('#'+id).click(function(){
-               current_pipeline=current_pipeline.concat(loaded_pipeline);
-               var t=0;
-               var l =loaded_pipeline.length;
-               for(t=0;t<l;t++){
-                 div=document.getElementById("pipeline");
-        dragg=document.createElement("div");
-        dragg.style="float:left;width:auto;height:30px";
-        span=document.createElement("span");
-        span.className="label label-default";
-        text=document.createTextNode(loaded_pipeline[t]);
-        div.appendChild(dragg);
-        dragg.appendChild(span);
-        span.appendChild(text);
-               }
-
-                });
-            
-        };
-     
-        var upload_pipeline = function(event){
-            input=event.target;
-            var reader = new FileReader();
-            reader.onload=function(){
-            var text=reader.result;
-            loaded_pipeline=JSON.parse(text);
-            if (ptr==1) {
-            go=document.createElement("input");
-            go.type="button";
-            go.id="conc"
-            go.className="btn btn-primary"
-            go.value="Concatenate Pipelines"
-            document.getElementById("pipe").appendChild(go);
-            ptr=0;
-            concatenate_pipeline(go.id);
-            }
-            }
-            reader.readAsText(input.files[0]);
-            };
-            
-        var save= function(){
-    $.ajax({
-        url:"savej/",
-        type:"POST",
-        data:{'pipeline':JSON.stringify(current_pipeline)}
-        });
-        };
-
-
-
-  var openFile = function(event) {
-     input = event.target;
-    var reader = new FileReader();
-    reader.onload = function(){
-      var dataURL = reader.result;
-      var output = document.getElementById('output');
-      output.src = dataURL;
-    };
-    reader.readAsDataURL(input.files[0]);
-     filename= input.files[0].name;
-     
-  };
-
-
-
-var rm_image= function(id,id1,id2)
-{
     
-  $('#'+id).click(function(){
-     document.getElementById(id1).remove();
-    });
-  $('#'+id2).click(function(){
-     var url=document.getElementById(id2).getAttribute("src");
-     document.getElementById('output').setAttribute("src",url);
-     t=url.lastIndexOf("images");
-     op=url.substring(t+7);
-
-  });
-    
-};
-
-
-  
-  var run_pipeline = function(event){
-    event.preventDefault();
-    $.ajax({
-        url:"opencv/",
-        type:"POST",
-        data:{'pipeline':JSON.stringify(current_pipeline),'filename':filename},
-        success:function(json)
-        {
-            var iter=0;
-            var len=json.url.length;
-            for(iter=len-1;iter>=0;iter--)
-            {
-            
-                  y=document.createElement("div");
-                  y.style="width:auto;height:auto";
-                  thumb=document.createElement("div");
-                  thumb.style="width:auto;height:auto";
-                  thumb.className="thumbnail"
-                
-          s=count.toString();
-          y.setAttribute("id",s);
-          ar=document.createElement("a");
-          z=document.createElement("img");
-          z.setAttribute("src",'static/images/'+'folder_'+filename+'/'+json.url[iter]+'.png');
-          z.className="img-responsive";
-          ar.className="img-thumbnail";
-          lab=document.createElement("div");
-          lab.className="caption"
-          head=document.createElement("h5");
-          trext=document.createTextNode((iter+1)+" . "+json.array[iter]);
-          head.appendChild(trext);
-          lab.appendChild(head);
-          z.id="c"+s;
-          rt=document.createElement("div");
-          po=document.createElement("a");
-          rt.setAttribute("class","panel");
-          rt.id="a"+s;
-          po.id="b"+s;
-          po.setAttribute("class","close");
-          y.className="col-sm-6 col-md-4";
-          grid=document.getElementById("grid");
-          grid.insertBefore(y,grid.firstChild);
-          y.appendChild(rt);
-          rt.appendChild(thumb);
-         thumb.appendChild(po);
-          thumb.appendChild(ar);
-          thumb.appendChild(lab);
-          ar.appendChild(z);
-          
-        count=count+1;
-        rm_image(po.id,y.id,z.id);       
-                }
-        }
-        });
-  };
-  
-  
-        </script>
     </head>
     <body>
         
-        <div style="background-color:#246C60">
+        <div class="div1">
             <div class="row">
                 <div class="col-xs-12">
         <h1 style="text-align:center"class>Gsoc 2016 CloudCv Toy Task 2 <small>OpenCv Interactive Demo</small></h1>
@@ -203,7 +30,7 @@ var rm_image= function(id,id1,id2)
         <div class="jumbotron" style="height:350px">
             <div class="row"><div class="col-xs-12">
            
-           <div style="position: relative;left:10px;float: left" id="pipe">
+           <div style="position:relative;left:10px;float: left" id="pipe">
                             <input  type='file' accept='.txt' class="filestyle" data-input="false" data-Buttontext="Upload Pipelines" onchange='upload_pipeline(event)'>
 <br>
             <input type="button" class="btn btn-primary " value="Clear Pipeline" onclick="delete_pipeline()">

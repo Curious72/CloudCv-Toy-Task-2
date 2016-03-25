@@ -91,6 +91,9 @@ def opencv(request):
     else:
           return render(request,'index.html')
 
+
+
+
 @csrf_exempt
 def cloudcv(request):
     if request.method == "POST":

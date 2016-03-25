@@ -1,1 +1,1 @@
-{"ConvolutionalFiltering": [{}, "12"], "Grayscale": [{"GaussianBlur": [{"ConvolutionalFiltering": [{}, "032"]}, "03"], "ConvolutionalFiltering": [{"CannyEdge": [{}, "021"]}, "02"], "Grayscale": [{"Grayscale": [{}, "000"]}, "00"], "CannyEdge": [{"GaussianBlur": [{}, "013"], "ConvolutionalFiltering": [{}, "012"]}, "01"]}, "0"], "CannyEdge": [{"Grayscale": [{"ConvolutionalFiltering": [{}, "102"]}, "10"]}, "1"]}
+{"Grayscale": [{"CannyEdge": [{"GaussianBlur": [{}, "013"]}, "01"]}, "0"]}

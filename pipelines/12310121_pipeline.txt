@@ -1,0 +1,1 @@
+["CannyEdge","ConvolutionalFiltering","GaussianBlur","CannyEdge","Grayscale","CannyEdge","ConvolutionalFiltering","CannyEdge"]
