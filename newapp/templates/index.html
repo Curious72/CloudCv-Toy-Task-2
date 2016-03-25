@@ -11,154 +11,13 @@
  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
          <script src="/static/bootstrap-filestyle-1.2.1/src/bootstrap-filestyle.min.js"></script>
 
-
+<script src="/static/js/index.js"></script>
         
-        <script>
-            pipeline=[];
-            pipeloaded=[];
-               t=1;
-        var doit=function(name){
-            
-        pipeline.push(name);
-            
-          };
-        var dothat = function(){
-          pipeline=[];  };
-        
-        var undo = function() {        
-            pipeline.pop();
-        
-        };
-        var fd= function(id){
-        
-            $('#'+id).click(function(){
-               pipeline=pipeline.concat(pipeloaded);
-        
-                });
-            
-        };
-     
-        var po = function(event){
-            input=event.target;
-            var reader = new FileReader();
-            reader.onload=function(){
-            var text=reader.result;
-            pipeloaded=JSON.parse(text);
-            if (t==1) {
-            go=document.createElement("input");
-            go.type="button";
-            go.id="conc"
-            go.value="Concatenate Pipelines"
-            document.getElementById("checker").appendChild(go);
-            t=0;
-            fd(go.id);
-            }
-            }
-            reader.readAsText(input.files[0]);
-            };
-        
-        
-        
-        
-        var save= function(){
-    $.ajax({
-        url:"savej/",
-        type:"POST",
-        data:{'mod':JSON.stringify(pipeline)},
-        success: function(json){
-         alert(json);   
-        }
-          
-        });
-        };
-
-
-
-  var openFile = function(event) {
-     input = event.target;
-    var reader = new FileReader();
-    reader.onload = function(){
-      var dataURL = reader.result;
-      var output = document.getElementById('output');
-      output.src = dataURL;
-    };
-    reader.readAsDataURL(input.files[0]);
-     op= input.files[0].name;
-     
-  };
-
-
-
-var newfn= function(id,id1,id2)
-{
     
-  $('#'+id).click(function(){
-     document.getElementById(id1).remove();
-    });
-  $('#'+id2).click(function(){
-     var url=document.getElementById(id2).getAttribute("src");
-     document.getElementById('output').setAttribute("src",url);
-     t=url.lastIndexOf("images");
-     op=url.substring(t+7);
-
-  });
-    
-};
-
-
-  count=1;
-  var aja = function(event){
-    event.preventDefault();
-    $.ajax({
-        url:"opencv/",
-        type:"POST",
-        data:{'mod':JSON.stringify(pipeline),'datas':op},
-        success:function(json)
-        {
-            $.each(json.url,function(){
-                
-                  y=document.createElement("div");
-          label=document.createElement
-          s=count.toString();
-          y.setAttribute("id",s);
-          ar=document.createElement("a");
-          z=document.createElement("img");
-          z.setAttribute("src",'static/images/'+'folder_'+op+'/'+this+'.png');
-          z.className="img-responsive";
-          ar.className="thumbnail";
-          z.id="c"+s;
-          rt=document.createElement("div");
-          po=document.createElement("a");
-          rt.setAttribute("class","panel");
-          rt.id="a"+s;
-          po.id="b"+s;
-          po.setAttribute("class","close");
-          y.className="col-xs-3";
-          document.getElementById("grid").appendChild(y);
-          y.appendChild(rt);
-          rt.appendChild(po);
-          rt.appendChild(ar);
-          ar.appendChild(z);
-          ;
-        count=count+1;
-        newfn(po.id,y.id,z.id);
-                
-                
-                
-                });
-        
-        },
-        error:function(exception){
-          alert("happy");
-        }
-        });
-  };
-  
-        </script>
     </head>
     <body>
         
-        <div style="background-color:#246C60">
+        <div class="div1">
             <div class="row">
                 <div class="col-xs-12">
         <h1 style="text-align:center"class>Gsoc 2016 CloudCv Toy Task 2 <small>OpenCv Interactive Demo</small></h1>
@@ -166,34 +25,54 @@ var newfn= function(id,id1,id2)
         </div>
         <form action="" method="POST" enctype="multipart/form-data" class="form-group">
             
-            <div style="text-align:center;" id="im">
+            <div id="im">
         
-     <div class="container">
-        <div class="jumbotron">
+        <div class="jumbotron" style="height:350px">
             <div class="row"><div class="col-xs-12">
-            <input class="btn btn-primary btn-lg filestyle" data-input="false" type='file' data-Buttontext="Upload Image"  name="img" id="inp" accept='image/*'  onchange='openFile(event)'>
-<img id='output' alt="Upload your image here" src="" />
-      </div>
-            </div></div></div>
-<div id="checker" style="text-align: center">
-                <input type="button" value ="Grayscale" onclick="doit('Grayscale');">
-                <input type="button" value="Resize" onclick="doit('Resize')">
-                <input type="button" value="ConvolutionalFiltering" onclick="doit('ConvolutionalFiltering');">
-                <input type="button" value="GaussianBlur" onClick="doit('GaussianBlur');">
-                <br>
-                <input type="button" value="Clear Pipeline" onclick="dothat()">
-            <!--    <input type="button" value="Undo" onclick="undo()">!-->
-                <input type="button" value="Save Pipeline" onclick="save()">
-                <input  type='file' accept='txt' class="filestyle" data-input="false" data-Buttontext="Upload Pipelines" onchange='po(event)'>
-                <br>
-                <input type="submit" value="Run Pipeline" onclick='aja(event)'>
-                <input type="button" value="Show pipeline" onclick='alert(pipeline);'>
-                </div>
-<br><br><br>
+           
+           <div style="position:relative;left:10px;float: left" id="pipe">
+                            <input  type='file' accept='.txt' class="filestyle" data-input="false" data-Buttontext="Upload Pipelines" onchange='upload_pipeline(event)'>
+<br>
+            <input type="button" class="btn btn-primary " value="Clear Pipeline" onclick="delete_pipeline()">
+            <!--    <input type="button" value="Undo" onclick="undo()">!--><br><br>
+                <input type="button" class="btn btn-primary " value="Save Pipeline" onclick="save()"><br><br>
+                
+                <input type="submit" class="btn btn-primary " value="Run Pipeline" onclick='run_pipeline(event)'><br><br>
+                <!--<input type="button" class="btn btn-primary " value="Show pipeline" onclick='alert(pipeline);'><br><br>!-->
+           </div>
+           
+             <div style="position:absolute;left:200px;float:left;">
+            <input class=" filestyle " data-input="false" type='file' data-Buttontext="Upload Image"  name="img" id="inp" accept='image/*'  onchange='openFile(event)'>
+            <br><br>
+<img id='output'   alt="Upload your image here" src="" />
             </div>
-            <div class="container" >
-           <div class="row" id="grid">
+           
+            <div style="position:absolute;left:420px" >
+
+            <input type="button" class="btn btn-primary " value ="Grayscale"  onclick="create_pipeline('Grayscale');">
+                <input type="button" class="btn btn-primary " value="CannyEdge" onclick="create_pipeline('CannyEdge')">
+                <input type="button"class="btn btn-primary " value="ConvolutionalFiltering" onclick="create_pipeline('ConvolutionalFiltering');">
+                <input type="button" class="btn btn-primary " value="GaussianBlur" onClick="create_pipeline('GaussianBlur');">
+            <br><br><br>
+           
+           <div style="position: relative;left: 140px">
+            <h4 >Pipeline</h4>
+           </div>     
+        <div id="pipeline" style="position: relative;left: 140px" >
             
+        </div>
+            </div>
+          
+              
+            </div></div></div>
+        <br><br>
+<div id="checker" style="text-align: center">
+        
+            
+                </div>
+            </div>
+            <div class="container" style="">
+           <div class="row" id="grid" style="position: absolute;left:120px;">
            </div>
             </div>
         </form>
